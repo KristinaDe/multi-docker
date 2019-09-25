@@ -1,0 +1,25 @@
+sudo: require
+services:
+  - docker
+
+before_install:
+  - docker build -t kdekic/react-test -f ./client/Dockerfile.dev ./client 
+  
+script:
+  - docker run -e CI=true USERNAME/react-test npm test
+
+
+after_success:
+  - docker build -t kdekic/multi-client ./client
+  - docker build -t kdekic/multi-nginx ./nginx
+  - docker build -t kdekic/multi-server ./server
+  - docker build -t kdekic/multi-worker ./worker
+
+#Log in to the docker CLI
+-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+#Take those images and push it to docker hub
+- docker push kdekic/multi-client
+- docker push kdekic/multi-nginx
+- docker push kdekic/multi-server
+- docker push kdekic/multi-worker
