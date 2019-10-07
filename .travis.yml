@@ -21,3 +21,4 @@ after_success:
  - docker push kdekic/multi-nginx
  - docker push kdekic/multi-server
  - docker push kdekic/multi-worker
+ 
